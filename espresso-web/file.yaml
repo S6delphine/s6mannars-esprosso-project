@@ -1,0 +1,68 @@
+---
+# Source: espresso-web/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: RELEASE-NAME-espresso-web
+  labels:
+    helm.sh/chart: espresso-web-0.1.0
+    app.kubernetes.io/name: espresso-web
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: espresso-web/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-espresso-web
+  labels:
+    helm.sh/chart: espresso-web-0.1.0
+    app.kubernetes.io/name: espresso-web
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: espresso-web
+    app.kubernetes.io/instance: RELEASE-NAME
+---
+# Source: espresso-web/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: RELEASE-NAME-espresso-web
+  labels:
+    my-espresso-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      my-espresso-web
+      
+  template:
+    metadata:
+      labels:
+        my-espresso-web
+    spec:
+      serviceAccountName: RELEASE-NAME-espresso-web
+      securityContext:
+        {}
+      containers:
+        - name: espresso-web
+          securityContext:
+            {}
+          image: "devopseasylearning/a1angel-espresso-web:v1.0.0"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {}

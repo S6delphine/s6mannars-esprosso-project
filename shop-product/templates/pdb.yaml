@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.pdb.name }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      version: {{- include "shop-product.selectorLabels" . | nindent 6 }}
